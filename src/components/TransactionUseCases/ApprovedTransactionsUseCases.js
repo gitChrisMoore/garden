@@ -30,7 +30,31 @@ export const ApprovedTransactionsUseCases = () => {
         for (const item of array) {
             // console.log("Loop Array")
             // console.log(item)
-            handleApprovedUsecase(item)
+            // handleApprovedUsecase(item)
+            // let res = await handleApprovedUsecase(item)
+
+            // await new Promise(next=> {
+            //     handleApprovedUsecase(item, function(err, data){
+            //         /*.... code here and when you finish...*/
+            //         console.log(err)
+            //         console.log('data')
+            //         next()
+            //     })
+            // })        
+
+            await handleApprovedUsecase(item)
+
+            // if (error) console.log('error')
+            // console.log(res)
+            // handleApprovedUsecase(item).then(() => {
+            //     // let objectURL = URL.createObjectURL(blob);
+            //     // let image = document.createElement('img');
+            //     // image.src = objectURL;
+            //     // document.body.appendChild(image);
+            //     console.log('handle 1')
+            //     console.log item
+            // }).catch(e => console.log(e));
+
         }
         console.log('Loop Complete')
         
@@ -51,9 +75,11 @@ export const ApprovedTransactionsUseCases = () => {
         if(tx.type === "FUNDS_ADD") {
             
             try {
-                if(currentAccount.balance) handleAddFundsExisting(tx, currentAccount);
+                if(currentAccount.balance) {
+                    await handleAddFundsExisting(tx, currentAccount);
+                }
             } catch (e) {
-                handleAddFundsNewAccount(tx);
+                await handleAddFundsNewAccount(tx);
             }
             
         } else {
@@ -72,7 +98,7 @@ export const ApprovedTransactionsUseCases = () => {
         console.log('FUNDS_ADD - EXISTING BALANCE')
         console.log(tx.id)
         
-        const res = await updateApprovedTransactionProcessed(tx.id).catch(e => console.log('Error: ', e.message));
+        await updateApprovedTransactionProcessed(tx.id).catch(e => console.log('Error: ', e.message));
         let transaction = {
             user_id: tx.user_id,
             account_number: tx.account_number,
@@ -85,6 +111,7 @@ export const ApprovedTransactionsUseCases = () => {
             processed: false
         }
         const newTx = await createApprovedTransaction(transaction).catch(e => console.log('Error: ', e.message));
+        return newTx
 
     }
 
@@ -93,7 +120,7 @@ export const ApprovedTransactionsUseCases = () => {
         console.log('FUNDS_ADD - NEW ACCOUNT')
         console.log(tx.id)
         
-        const res = await updateApprovedTransactionProcessed(tx.id).catch(e => console.log('Error: ', e.message));
+        await updateApprovedTransactionProcessed(tx.id).catch(e => console.log('Error: ', e.message));
         let transaction = {
             user_id: tx.user_id,
             account_number: tx.account_number,
@@ -106,6 +133,7 @@ export const ApprovedTransactionsUseCases = () => {
             processed: false
         }
         const newTx = await createApprovedTransaction(transaction).catch(e => console.log('Error: ', e.message));
+        return newTx
 
     }
 
